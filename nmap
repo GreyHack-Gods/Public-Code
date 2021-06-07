@@ -1,0 +1,71 @@
+//for questions or help wtih the program or adding this to your own script come join us on discord at https://discord.gg/9GBkWg7aGB
+
+if params.len==1 then ip=params[0]
+if params.len!=1 then ip=user_input("IP:")
+    if not is_valid_ip(ip) then ip=nslookup(ip)
+	firewall_map=function(ip)
+		clear_screen
+		router=get_router(ip)
+		fw=router.firewall_rules
+		firewalls={}
+		num=0
+		if fw.len>0 then
+			print("Firewalls on network:"+ip)
+			data="ACTION PORT SOURCE DESTINATION"
+			while fw.len>0
+				firewalls[num]=fw.pop
+				num=num+1
+			end while
+			num=0
+			while firewalls.len!=0
+				t=firewalls[num]
+				fire=(t.split(" "))
+				if fire[0]=="ALLOW" then
+					fire.remove(0)
+					fire.reverse
+					fire.push("ALLOW")
+					fire.push("ALLOW")
+					fire.reverse
+					action=fire[0]
+					port=fire[1]
+					source=fire[2]
+					going=fire[3]
+					data=(data+" "+action+" "+port+" "+source+" "+going)
+				else if fire[0]=="DENY" then
+					fire.remove(0)
+					fire.reverse
+					fire.push("DENY")
+					fire.reverse
+					action=fire[0]
+					port=fire[1]
+					source=fire[2]
+					going=fire[3]
+					data=(data+" "+action+" "+port+" "+source+" "+going)
+				end if
+				firewalls.remove(num)
+				num=num+1
+			end while
+			print(format_columns(data))
+		end if
+	end function
+	ps="Statusholder"
+	r=get_router(ip)
+	if not r then exit(ip+" Router not found")
+	print("Scan report for:"+ip+" :<color=red>ROUTER</color>")
+	ports=r.used_ports
+	data="IP STATUS PORT SERVICE LAN_IP"
+	for port in ports
+		service=r.port_info(port)
+		service=service.split(" ")
+		if port.is_closed then
+			p=1
+			portstatus="Closed"
+		else if not port.is_closed then
+			p=2
+			portstatus="Open"
+		end if
+		data=data+"\n"+ip+" "+portstatus+" "+port.port_number+" "+service[0]+" "+port.get_lan_ip
+	end for
+	firewall_map(ip)
+	print(format_columns(data))
+	print("WHOIS:"+whois(ip))
