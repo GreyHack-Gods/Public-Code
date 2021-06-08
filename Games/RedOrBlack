@@ -142,8 +142,7 @@ count = function()
 	if countCont.to_int <= 28 then
 		abc = countCont.to_int
 		counter = abc + 7
-		def = counter
-		globals.points = def 
+		globals.points = counter 
 		countFile.set_content(globals.points)
 		print("You've <color=red><b>Won</b></color> <i>7 points</i>! [<u><color=green>" + globals.points + "</u></color>]  points total!")
 	else 
@@ -156,7 +155,7 @@ count = function()
 			print("You've <color=red><b>Won</b></color> <i>14 points</i>! [<u><color=green>" + globals.points + "</u></color>]  points total!")
 		end if 
 	end if
-	if countCont.to_int == 250 then
+	if countCont.to_int >= 250 then
 		   print("You've Won The Game!")
 	       Reg
 	end if
@@ -173,8 +172,7 @@ take_away = function()
 	if countCont.to_int <= 28 then
 		abc = countCont.to_int
 		counter = abc - 3
-		def = counter
-		globals.points = def 
+		globals.points = counter 
 		countFile.set_content(globals.points)
 		print("You've <color=red><b>LOST</b></color> <i>3 points</i>! [<u><color=green>" + globals.points + "</u></color>]  points total!")
 	else 
@@ -187,7 +185,7 @@ take_away = function()
 			print("You've <color=red><b>LOST</b></color> <i>6 points</i>! [<u><color=green>" + globals.points + "</u></color>]  points total!")
 	    end if
 	end if
-	if countCont == -25 then
+	if countCont <= -25 then
 		exit("You've Lost The Game!")
     end if 
 	globals.Points = computer.File("/.folder/PointTrack")
