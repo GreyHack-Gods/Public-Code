@@ -1,0 +1,3 @@
+color=function(color,text);return "<color="+color+">"+text+"</color>";end function
+
+print(color("yellow","hello darkness my old friend"))
