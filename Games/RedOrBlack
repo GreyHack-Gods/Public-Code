@@ -10,8 +10,7 @@ Scores = computer.File("/.folder/UserScores")
 Users = computer.File("/.folder/Users")
 ora = "<color=orange>"
 cle = "</color>"
-emp = "[<color=orange>DEALER</color>]:#>" 
-ply = "[<color=yellow>PLAYER</color>]:#>"
+
 
 
 //      LOGO - NOT NEEDED 
