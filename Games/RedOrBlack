@@ -1,0 +1,245 @@
+//    - RED OR BLACK TEMPLATE - for questions or help with the game or adding this to your own script come join us on discord at https://discord.gg/9GBkWg7aGB
+
+
+
+myPC = get_shell  
+computer = myPC.host_computer 
+RorB_File = computer.File("/.folder/RorB") 
+Points = computer.File("/.folder/PointTrack")
+Scores = computer.File("/.folder/UserScores") 
+Users = computer.File("/.folder/Users")
+ora = "<color=orange>"
+cle = "</color>"
+emp = "[<color=orange>DEALER</color>]:#>" 
+ply = "[<color=yellow>PLAYER</color>]:#>"
+
+
+//      LOGO - NOT NEEDED 
+print(emp + " " + "Welcome to Red or Black! Thanks for playing!") 
+print
+print(".------.------.------.  ")                                  
+print("|R.--. |E.--. |D.--. |    ")                                
+print("| :(): | (\/) | :/\: |      ")                              
+print("| ()() | :\/: | (__) |        ")                            
+print("| '--'R| '--'E| '--'D|          ")                          
+print("`------`------.------.------.     ")                        
+print(" .-. .-. .-.  |O.--. |R.--. |       ")                      
+print("((5)((5)((5)) | :/\: | :(): |         ")                    
+print(" '-.-'-.-'-.-.| :\/: | ()() |           ")                  
+print("  ((1)((1)((1)| '--'O| '--'R|             ")                
+print("   '-' '-' '-'`------`.------.------.------.------.------.")
+print(" .-. .-. .-. .-. .-.  |B.--. |L.--. |A.--. |C.--. |K.--. |")
+print("((5)((5)((5)((5)((5)) | :(): | :/\: | (\/) | :/\: | :/\: |")
+print(" '-.-'-.-'-.-'-.-'-.-.| ()() | (__) | :\/: | :\/: | :\/: |")
+print("  ((1)((1)((1)((1)((1)| '--'B| '--'L| '--'A| '--'C| '--'K|")
+print("   '-' '-' '-' '-' '-'`------`------`------`------`------'")
+
+//       Checks if Old Point Tracker Exists.
+//       Deletes Old Point Tracker.
+if Points then
+	Points.delete
+	computer.touch("/.folder", "PointTrack")
+end if 
+
+//       New Point Tracker 
+if not Points then
+	computer.create_folder("/", ".folder")
+	computer.create_folder("/", ".RegUsers")
+	computer.touch("/.folder", "Users")
+	computer.touch("/.folder", "PointTrack")
+	computer.touch("/.folder", "UserScores")
+	computer.touch("/.folder", "RegUsers")
+end if
+
+
+globals.Scores = computer.File("/.folder/UserScores")
+globals.Users = computer.File("/.folder/Users")
+globals.Points = computer.File("/.folder/PointTrack")
+globals.Names = computer.File("/.folder/.RegUsers")
+
+
+//       LEADER BOARD REGISTRY 
+
+Reg = function()
+	print("Please Register Your UserName")
+	input = user_input("> ")
+	inp = input 
+	if computer.File("/.folder/.RegUsers/" + inp) != null then
+		print("<color=red>Username Already Taken")
+		Reg
+	end if 
+	if computer.File("/.folder/.RegUsers/" + inp) == null then
+		computer.touch("/.folder/.RegUsers", inp)
+		scoreCount = globals.Scores.get_content
+		highScores = globals.Scores
+		highScores.set_content(scoreCount + "\n" + globals.points + " achieved by: " + inp + " !")
+		print("<color=red>" + inp + "</color> [<color=green>REGISTRY</color>] complete !")
+		get_shell.launch("/bin/cat", "/.folder/UserScores")
+		exit("Thanks For Playing!") 
+	end if 
+end function
+
+//     POINT COUNTER
+
+counter = 0
+globals.points = counter + 1
+globals.Points = computer.File("/.folder/PointTrack")
+
+
+//    CREATES FILE CHECKER 
+
+if not RorB_File then
+	computer.touch("/.folder", "RorB")
+	computer.touch("/.folder", "Input")
+end if 
+
+RorB = computer.File("/.folder/RorB")
+Answers = computer.File("/.folder/Input")
+
+
+//    GRABS CARDS
+
+Deck = function()
+	RorB = computer.File("/.folder/RorB")
+	suit = ["Hearts","Spades","Diamonds","Clubs"]
+	suit.shuffle
+	s = suit.pull
+	
+	ranks = ["Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Jack","King","Queen","Ace"]
+	ranks.shuffle
+	ranks.pull
+	rank = ranks.pull
+	
+//    DEALS CARDS	
+	
+	if s == "Hearts" then
+		e = "red"   
+		RorB.set_content(e)
+		print("<color=red>Card</color>: " + rank + " | <color=green>Suite</color>: " + s + " | <color=blue>Color</color>: Red")
+	end if 
+	if s == "Clubs" then
+		e = "black"
+		RorB.set_content(e)
+		print("<color=red>Card</color>: " + rank + " | <color=green>Suite</color>: " + s + " | <color=blue>Color</color>: Black")
+	end if 
+	if s == "Spades" then
+		e = "black"
+		RorB.set_content(e)
+		print("<color=red>Card</color>: " + rank + " | <color=green>Suite</color>: " + s + " | <color=blue>Color</color>: Black")
+	end if
+	if s == "Diamonds" then
+		e = "red"
+		RorB.set_content(e)
+		print("<color=red>Card</color>: " + rank + " | <color=green>Suite</color>: " + s + " | <color=blue>Color</color>: Red")
+	end if
+end function
+
+//    ADDS POINTS
+
+count = function()
+	countFile = computer.File("/.folder/PointTrack")
+	countCont = countFile.get_content
+	
+	if countCont.to_int <= 28 then
+		abc = countCont.to_int
+		counter = abc + 7
+		def = counter
+		globals.points = def 
+		countFile.set_content(globals.points)
+		print("You've <color=red><b>Won</b></color> <i>7 points</i>! [<u><color=green>" + globals.points + "</u></color>]  points total!")
+	else 
+		if countCont.to_int > 28 then
+			abc = countCont.to_int
+			counter = abc + 14
+			globals.points = counter
+			countFile.set_content(globals.points)
+			print("Multiplier x2")
+			print("You've <color=red><b>Won</b></color> <i>14 points</i>! [<u><color=green>" + globals.points + "</u></color>]  points total!")
+		end if 
+	end if
+	if countCont.to_int == 250 then
+		   print("You've Won The Game!")
+	       Reg
+	end if
+	globals.Points = computer.File("/.folder/PointTrack")
+end function
+
+//   TAKES POINTS
+
+take_away = function()
+
+	countFile = computer.File("/.folder/PointTrack")
+	countCont = countFile.get_content
+	
+	if countCont.to_int <= 28 then
+		abc = countCont.to_int
+		counter = abc - 3
+		def = counter
+		globals.points = def 
+		countFile.set_content(globals.points)
+		print("You've <color=red><b>LOST</b></color> <i>3 points</i>! [<u><color=green>" + globals.points + "</u></color>]  points total!")
+	else 
+		if countCont.to_int > 28 then
+			abc = countCont.to_int
+			counter = abc - 6
+			globals.points = counter
+			countFile.set_content(globals.points)
+			print("Multiplier x2")
+			print("You've <color=red><b>LOST</b></color> <i>6 points</i>! [<u><color=green>" + globals.points + "</u></color>]  points total!")
+	    end if
+	end if
+	if countCont == -25 then
+		exit("You've Lost The Game!")
+    end if 
+	globals.Points = computer.File("/.folder/PointTrack")
+end function
+
+//    DEALER PROMPTS
+
+Deal = function()  
+	Deck
+	print				
+	print("Which color do you think the next card will be?")
+	print
+	says = user_input("> ")  
+	print
+	if says == "red" then
+		Answers.set_content(says)
+		print("<color=yellow>==========================")
+		print("You've chosen the color red")
+		print
+		else if says == "black" then
+		print
+		print("<color=yellow>==========================")
+		print("You've chosen the color black!")
+		Answers.set_content(says)
+	end if 
+	if says == "exit" then
+		print("Would you like to register a user and set your highscore?")
+		leave = user_input("> ")
+		if leave == "y" or leave == "Y" or leave == "yes" then
+			    Reg
+		else if leave == "n" or leave == "no" then
+			  exit("Thanks for playing")
+		end if   
+     
+Deck
+
+       //   CALLS POINT FUNCTIONS
+
+checker = computer.File("/.folder/Input")
+if checker.get_content != RorB.get_content then
+	    print
+	    take_away
+	    print("<color=yellow>==========================")
+end if 
+if checker.get_content == RorB.get_content then
+	    print
+	    count
+	    print("<color=yellow>==========================")
+end if  
+        wait(2)
+clear_screen
+Deal
+end function  
+Deal()
