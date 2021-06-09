@@ -8,13 +8,11 @@ RorB_File = computer.File("/.folder/RorB")
 Points = computer.File("/.folder/PointTrack")
 Scores = computer.File("/.folder/UserScores") 
 Users = computer.File("/.folder/Users")
-ora = "<color=orange>"
-cle = "</color>"
 
 
 
 //      LOGO - NOT NEEDED 
-print(emp + " " + "Welcome to Red or Black! Thanks for playing!") 
+print("Welcome to Red or Black! Thanks for playing!") 
 print
 print(".------.------.------.  ")                                  
 print("|R.--. |E.--. |D.--. |    ")                                
@@ -47,7 +45,7 @@ if not Points then
 	computer.touch("/.folder", "Users")
 	computer.touch("/.folder", "PointTrack")
 	computer.touch("/.folder", "UserScores")
-	computer.touch("/.folder", "RegUsers")
+	
 end if
 
 
