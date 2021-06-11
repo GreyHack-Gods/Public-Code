@@ -78,11 +78,8 @@ end function
 //    CLEARS POT 
 Clear_Pot = function()
 	globals.Pot = computer.File("/.folder/potPoints")
-	globals.CpuPoints = computer.File("/.folder/cpuPoints")
-	globals.PlyPoints = computer.File("/.folder/plyPoints")
 	potCont = globals.Pot.get_content
-	cpuCont = globals.CpuPoints.get_content
-	plyCont = globals.PlyPoints.get_content
+	
 	
 	if potCont.to_int <= 5000 then
 		total = potCont.to_int
@@ -98,11 +95,7 @@ end function
 
 Add_Roll = function()
 	globals.Pot = computer.File("/.folder/potPoints")
-	globals.CpuPoints = computer.File("/.folder/cpuPoints")
-	globals.PlyPoints = computer.File("/.folder/plyPoints")
 	potCont = globals.Pot.get_content
-	cpuCont = globals.CpuPoints.get_content
-	plyCont = globals.PlyPoints.get_content
 	
 	if potCont.to_int <= 5000 then
 		total = potCont.to_int
@@ -110,8 +103,8 @@ Add_Roll = function()
 		
 		globals.Pot.set_content(counter)
 		print("Pot " + red + "<b>INCREASED</b>" + cle + " by <i>10 points</i>! [<u>" + gre + counter + cle + "</u>]  points total!") 
-	end if
-	globals.Pot = computer.File("/.folder/potPoints")
+	 end if
+	 globals.Pot = computer.File("/.folder/potPoints")
 end function
 
 //    ADDS POT TO PLAYER TOTAL
@@ -127,7 +120,7 @@ PLYwin = function()
 		print("You've " + red + " <b>WON</b>" + cle + " THE <i>POT</i>! [<u>" + gre + counter + cle + "</u>]  points total!") 
 	   wait(2)
     else 
-    if potCont.to_int == 1000 then
+    if plyCont.to_int == 1000 then
 	   print("You've Won The Game!")
 	   Reg
    end if
@@ -140,19 +133,15 @@ end function
 
 CPUwin = function()
 	
-	globals.CpuPoints = computer.File("/.folder/cpuPoints")
-	
+    globals.CpuPoints = computer.File("/.folder/cpuPoints")
 	potCont = Pot.get_content
 	cpuCont = CpuPoints.get_content
-
-	
-	if cpuCont.to_int < 5000 then
-		total = cpuCont.to_int
-		counter = total + potCont.to_int
-		
-		globals.CpuPoints.set_content(counter)
-		print("CPU "+ red + "<b>WON</b>" + cle + " THE <i>POT</i>! [<u>" + gre + counter + cle + "</u></color>]  points total!") 
-    else
+if cpuCont.to_int < 5000 then
+	total = cpuCont.to_int
+	counter = total + potCont.to_int
+	globals.CpuPoints.set_content(counter)
+	print("CPU "+ red + "<b>WON</b>" + cle + " THE <i>POT</i>! [<u>" + gre + counter + cle + "</u></color>]  points total!") 
+else
 	if cpuCont.to_int == 1000 then
 	   print("CPU Won The Game!")
 	   Reg
@@ -198,14 +187,14 @@ RollDice = function()
 	print("Your Turn to roll! Type '1' to roll or '2' to leave!")
 	prompt = user_input("[PLAYER]:#> ")
 	if prompt == "2" then
-		print("Register to be on leaderboard? (y/n)?")
-	    said = user_input("[PLAYER]:#> ")
-	        if said == "y" then
-		         Reg
-	        end if  
-		      if said == "n" then
-			       exit("Thanks for playing!") 
-	 end if 
+	print("Register to be on leaderboard? (y/n)?")
+	said = user_input("[PLAYER]:#> ")
+		if said == "y" then
+			Reg
+		else  
+			if said == "n" then
+			   	exit("Thanks for playing!") 
+	 	    end if 
 	if prompt == "1" then
 	end if 
 	
@@ -224,49 +213,50 @@ RollDice = function()
 	
 	print("Added" + globals.tot + " to pot!")
 	print("Player Rolled!")
-  wait(1)
+  	wait(1)
 	print("Checking the dice..")
 	
 	if rstrt == 0 or rstrt == 20 then
 		print("[CPU]: The dice fell off the table! More Points Added!")
 		Add_Roll
 		wait(1)
-  else
+	else
     if rstrt == 30  then 
-	     print("[CPU]: I wanna restart! Can we? (y/n)?")
-	     x = user_input("> ")
-	     if x == "y" then
-		      Clear_Pot
-		      clearPly
-		      clearCpu
+	    print("[CPU]: I wanna restart! Can we? (y/n)?")
+	    x = user_input("> ")
+	    if x == "y" then
+			Clear_Pot
+		    clearPly
+		    clearCpu
 	        print("Thanks! I'm ready!")
- 	     end if 
-	        if x == "n" then
-		         print("Okay then :(")
-		      end if  
-	           if mydie1 + MYdie2 == 7 or mydie1 + MYdie2 == 11  then
-		         print("DieA :" + red + mydie1 + cle + " DieB :" + red + MYdie2 + cle) 
-		         print("[CPU]: Lucky Roll!")
-		         PLYwin
-		         Clear_Pot
-             wait(1)
-             clear_screen
-          end if    
-             if mydie1 + MYdie2 != 7 or mydie1 + MYdie2 != 11 then
-                print("DieA :" + red + mydie1 + cle + " DieB :" + red + MYdie2 + cle)
-             end if 
-                if mydie1 + MYdie2 == 2 then
-	                 print("[CPU]: YOU GOT SNAKE EYES!")
-	                 wait(1)
-	                 clearPly
-                   clear_screen
-                end if 
+		else 
+		if x == "n" then
+			print("Okay then :(")
+		end if  
+	end if
+	if mydie1 + MYdie2 == 7 or mydie1 + MYdie2 == 11  then
+		print("DieA :" + red + mydie1 + cle + " DieB :" + red + MYdie2 + cle)
+		print("[CPU]: Lucky Roll!")
+		PLYwin
+		Clear_Pot
+        wait(1)
+        clear_screen
+	end if     
+    if mydie1 + MYdie2 != 7 or mydie1 + MYdie2 != 11 then
+    	print("DieA :" + red + mydie1 + cle + " DieB :" + red + MYdie2 + cle)
+	end if 
+    if mydie1 + MYdie2 == 2 then
+		print("[CPU]: YOU GOT SNAKE EYES!")
+	    clearPly
+		wait(1)
+		clear_screen
+	end if 
    
 //    CPU ROLLS DICE 
 
-   wait(1)
-   print("[CPU]: It's My Turn!!")
-   wait(1)
+	wait(1)
+	print("[CPU]: It's My Turn!!")
+   	wait(1)
  
    
    dice2 = ["1", "2", "3", "4", "5", "6"]
@@ -283,24 +273,24 @@ RollDice = function()
    reroll = r.to_int 
 
     if reroll == 0 or reroll == 10 or reroll == 20 then
-	   print("Multiplier Achieved!") 
-	   Add_Roll
+	   	print("Multiplier Achieved!") 
+	   	Add_Roll
     end if 
     if codie1 + codie2 != 7 and codie1 + codie2 != 11 then
-      print("[CPU]: I can't win! [" + gre + codie1 + cle + "][" + gre + codie2 + cle + "]"  )
-    wait(1)
-   end if 
+      	print("[CPU]: I can't win! [" + gre + codie1 + cle + "][" + gre + codie2 + cle + "]"  )
+    	wait(1)
+   	end if 
 
     if codie1 + codie2 == 7 and codie1 + codie2 == 11 then 
-      print("[CPU]: I've WON!")
-      CPUwin
-      Clear_Pot
-      clear_screen   
-    wait(1)
+      	print("[CPU]: I've WON!")
+      	CPUwin
+      	Clear_Pot
+      	clear_screen   
+    	wait(1)
     end if 
     if codie1 + codie2 == 2 then
 	   print("[CPU]: I GOT SNAKE EYES!")
-      clearCpu
+	   clearCpu
     end if 
 RollDice
 
