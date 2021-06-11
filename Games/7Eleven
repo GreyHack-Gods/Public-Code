@@ -195,6 +195,7 @@ RollDice = function()
 			if said == "n" then
 			   	exit("Thanks for playing!") 
 	 	    end if 
+	end if
 	if prompt == "1" then
 	end if 
 	
@@ -211,7 +212,7 @@ RollDice = function()
 	MYdie2 = d2.to_int
 	Add_Roll
 	
-	print("Added" + globals.tot + " to pot!")
+	
 	print("Player Rolled!")
   	wait(1)
 	print("Checking the dice..")
