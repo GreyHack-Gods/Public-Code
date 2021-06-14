@@ -1,4 +1,4 @@
-microx_version = "2.3"
+microx_version = "3.0"
 
 getParam = function(paramType)
 	rnp=0
@@ -11,7 +11,7 @@ end function
 
 loadLibrary = function(libFileName, search)
 	paths=[""]
-	if search then paths = [get_shell.host_computer.current_path, "/lib", "/bin", "/usr/bin"]
+	if search then paths = [current_path, "/lib", "/bin", "/usr/bin"]
 	for p in paths
 		lib = include_lib(p + "/" + libFileName)
 		if lib then return lib
@@ -80,7 +80,7 @@ extractMetaLibs = function(router)
 	if typeof(router) == "router" then 
 		externalPorts = router.used_ports
 	else if typeof(router) == "string" then
-		externalPorts = get_router().computer_ports(router)
+		externalPorts = get_router().device_ports(router)
 	end if
 	
 	metaxploit = loadMetaXPloit()
@@ -147,7 +147,7 @@ loadExploits = function(metaLib)
 	
 	rValue = []
 	newKey = false
-	lines = exploitLibFile.content.split("\n")
+	lines = exploitLibFile.get_content.split("\n")
 	info("Library contains " + lines.len + " lines of data.")
 	
 	for line in lines
@@ -175,7 +175,7 @@ end function
 displayLocalMap = function(localMachineIP)
 	// Display the ports open on this machine
 	router = get_router()
-	localPorts = router.computer_ports(localMachineIP)
+	localPorts = router.device_ports(localMachineIP)
 	externalPorts = router.used_ports
 	
 	print("\n<b>Local Machine at " + localMachineIP)
@@ -248,17 +248,17 @@ displayRouterMap = function(mRouter)
 		print(" |  |"+arrows+" :" + padSpaces(externalPort.port_number, 5) +" " + padSpaces(mRouter.port_info(externalPort).split(" ")[0], 8) + " " + padSpaces(mRouter.port_info(externalPort).split(" ")[1], 8) + arrows2 + externalPort.get_lan_ip)
 	end for
 		
-	if not mRouter.computers_lan_ip then
+	if not mRouter.devices_lan_ip then
 		print(" |-> <i>No local machines detected.</i>")
 	else
-		for localMachine in mRouter.computers_lan_ip
+		for localMachine in mRouter.devices_lan_ip
 			print(" |-> <b>Machine at " + localMachine + "</b>")
 			vbar = "|"
-			if mRouter.computers_lan_ip.indexOf(localMachine) == (mRouter.computers_lan_ip.len-1) then vbar = " "
-			if not mRouter.computer_ports(localMachine) then
+			if mRouter.devices_lan_ip.indexOf(localMachine) == (mRouter.devices_lan_ip.len-1) then vbar = " "
+			if not mRouter.device_ports(localMachine) then
 				print(" "+vbar+"   |--> <i>No ports detected.</i>")
 			else 
-				for port in mRouter.computer_ports(localMachine)
+				for port in mRouter.device_ports(localMachine)
 					arrows = "-->"
 					if port.is_closed then arrows = "-X>"
 					toPrint = " "+vbar+"   |"+arrows+" :" + padSpaces(port.port_number, 5) + " " + padSpaces(mRouter.port_info(port).split(" ")[0], 8) + " " + padSpaces(mRouter.port_info(port).split(" ")[1], 8)
@@ -385,7 +385,7 @@ scanTarget = function(target)
 		end if 
 	end for
 		
-	exploitLibFile.set_content(exploitLibFile.content + newEntries)
+	exploitLibFile.set_content(exploitLibFile.get_content + newEntries)
 	info("library updated.")
 	
 	writeExploits(removeDuplicates(loadExploits(target)), target)
