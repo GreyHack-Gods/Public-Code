@@ -679,13 +679,13 @@ end function
 
 crackPasswordFile = function(filePtr, hostInfo="")
 	crypto = loadLibrary("crypto.so", true)
-	lines = filePtr.content.split("\n")
+	lines = filePtr.get_content.split("\n")
 	for line in lines
 		results = []
 		line = split(line.trim, ":")
 		if line.len == 2 and line[1].len == 32 then
 			print("Cracking MD5 hash for user: <b><i>" + line[0] + "</b></i> in file: <b><i>" + filePtr.path + "</b></i>")
-			pw = crypto.decipher(line[0], line[1])
+			pw = crypto.decipher(line[1])
 			if pw then
 				print("Password: ["+pw+"]")
 				get_shell().host_computer.touch(home_dir, "crackedPasswords.txt")
