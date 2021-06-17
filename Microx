@@ -690,7 +690,7 @@ crackPasswordFile = function(filePtr, hostInfo="")
 				print("Password: ["+pw+"]")
 				get_shell().host_computer.touch(home_dir, "crackedPasswords.txt")
 				f = get_shell().host_computer.File(home_dir+"/crackedPasswords.txt")
-				f.set_content(f.content + "\n" + padSpaces(line[0]+"@"+pw, 30) + " " + hostInfo + ": " + filePtr.name)
+				f.set_content(f.get_content + "\n" + padSpaces(line[0]+"@"+pw, 30) + " " + hostInfo + ": " + filePtr.name)
 			end if
 		end if
 	end for
@@ -819,14 +819,14 @@ browseFiles = function(dirPtr, hostInfo = "")
 			choiceb = get_choice(choicesb, choicesb.len-1)
 			if choiceb == choicesb.len-1 then break
 			if choiceb == 1 or choiceb == 2 then
-				if filePtr.content then
+				if filePtr.get_content then
 					if choiceb == 1 then
 						print("\n\n<b>Contents of file: " + filePtr.name + "</b>")
-						print(filePtr.content)
+						print(filePtr.get_content)
 					else
 						get_shell.host_computer.touch(home_dir + "/Downloads", filePtr.name)
 						print("Saving file to: " + home_dir + "/Downloads/" + filePtr.name)
-						x = get_shell.host_computer.File(home_dir + "/Downloads/" + filePtr.name).set_content(filePtr.content)
+						x = get_shell.host_computer.File(home_dir + "/Downloads/" + filePtr.name).set_content(filePtr.get_content)
 						if(x == 1) then
 							print("File downloaded successfully.")
 						else
@@ -854,7 +854,7 @@ browseFiles = function(dirPtr, hostInfo = "")
 					end if
 				end if
 			else if choiceb == 5 then
-				if not filePtr.content then
+				if not filePtr.get_content then
 					error("Could not read the contents of this file - Check permissions and file type.")
 					continue
 				else 
@@ -864,7 +864,7 @@ browseFiles = function(dirPtr, hostInfo = "")
 				end if
 			else if choiceb == 6 then
 				x = user_input("<b>Please enter what you would like to add to the contents of this file.</b>\n")
-				x = filePtr.set_content(filePtr.content + "\n" + x)
+				x = filePtr.set_content(filePtr.get_content + "\n" + x)
 				if(x == 1) then
 					print("File appended successfully.")
 				else
