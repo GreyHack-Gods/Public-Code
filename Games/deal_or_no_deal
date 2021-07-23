@@ -1,0 +1,115 @@
+//Game coded by Doug Dimmadome#4085
+//Tested by TigerDriver45#1440
+//For help with this game join our discord at https://discord.gg/AEsPbQW5Ag
+
+money =function() //comes up with the number for the money
+	a=0
+	generate_number=function() 
+		num=ceil(rnd*100)
+		return num
+	end function
+	number=generate_number
+	while used.indexOf(number)!=null
+		number=generate_number
+	end while
+	used.push(number)
+	return number
+end function
+
+
+
+list=[]
+map={"took":0}
+used=[]
+cases=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26] //number of cases
+pcash={} //cash in players case
+casecash={} //lists how much money each case has
+for int in cases
+	casecash[int]=money //asigns a money value to each case
+end for
+
+//puts $10,000 in one of the cases
+number=floor(rnd*27)
+while number <1 
+	number=floor(rnd*27)
+end while
+casecash[number]=10000
+
+print(cases) //prints cases on the board
+pcase=user_input("Pick a case: ") //this is where the player picks there case to set aside
+pcase=pcase.val //changes the number inputed to a integer
+cases.remove(cases.indexOf(pcase)) //removes the chosen case from list of cases still on the board
+
+open=function() //opens the case
+	print(cases) //prints cases on the board
+	map.c=user_input("Pick a case to open: ") //player picks their case
+	if map.c=="offer" then offer() //forces the banker to give an offer(was for testing think of it as a cheat code)
+	while cases.indexOf(map.c.val)==null //checks if the number the player picked is still on the board
+		print("That case is not up there")
+		print(cases)
+		map.c=user_input("Pick a case to open!")
+	end while
+	map.c=map.c.val //converts the string the player entered to a integer
+	cases.remove(cases.indexOf(map.c)) //removes the chosen case from list of cases still on the board
+	//list.push("Case number "+map.c+" contains $"+casecash[map.c]) //pushes to a list how much is in each case for testing reasons
+	print("Case number "+map.c+" contains $"+casecash[map.c]) //prints how much money is in the chosen case
+	wait(4)
+end function
+
+trade=function() //This will run once there is only one case left on the board
+	clear_screen //clears the screen
+	print("There is only one case left to open!")
+	print("You can either open it or you can switch it out with your case")
+	print("Your case:"+pcase+ " Case left:"+cases)
+	case=cases.pull //sets the var case to the only case left on the board
+	op=user_input("Which case do you want to keep: ")
+	op=op.val // changes the players case number into an integer
+	if op==pcase then  // if the player keeps their case
+		print("You have chosen to keep your case and open case number:"+pcase)
+		print("You have just lost out on $"+casecash[case])
+		print("Your case contains $"+casecash[pcase])
+		user_input("ENTER")
+	else //if the player switchs cases
+		print("You have chosen to trade and open case number:"+case)
+		print("You have just lost out on $"+casecash[pcase])
+		print("You won $"+casecash[op])
+		user_input("ENTER")
+	end if
+end function
+
+offer=function() //this function is ran when the banker has an offer for you
+	print("The BANKER has an offer for you!!!")
+	wait(5)
+	number=rnd*4
+	while number<2
+		number=rnd*4
+	end while
+	offer=floor(money*number)
+	used.push(offer)
+	c=cases.len+1
+	print("The BANKER is offering $"+offer)
+	print("You still have "+c+ " case(s) left to open")
+	print("Accept the offer(1) or decline(0)")
+		if user_input("answer:") == "1" then
+			clear_screen
+			print("You have just walked away with $"+offer)
+			exit("You had $"+casecash[pcase]+" In your case")
+			wait(4)
+			
+		else if user_input("Answer:")=="0" then
+			map.took=0
+			print("You have declined the offer game on")
+			open()
+		end if
+end function
+
+while cases.len!=0
+	chance=rnd*201 //picks a random number between 0 and 200
+	if chance<50 then //if the random number picked above is less then 50 then the banker will make an offer
+		offer()
+	else if cases.len==1 then 
+		trade()
+	else
+		open()
+	end if
+end while
